@@ -2,11 +2,6 @@
 using ChatApp.Shared.Entities;
 using Microsoft.AspNetCore.SignalR.Client;
 using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace ChatApp.Client.ChatHub
 {
@@ -71,6 +66,7 @@ namespace ChatApp.Client.ChatHub
         public Task StopAsync(CancellationToken cancellationToken = default) => _hubConnection.StopAsync(cancellationToken);
 
         #region IServerChatHub
+
         public Task<string> GetUserIdentifier() => _hubConnection.InvokeAsync<string>(nameof(IServerChatHub.GetUserIdentifier));
 
         public Task Join(User user) => _hubConnection.InvokeAsync(nameof(IServerChatHub.Join), user);
@@ -81,6 +77,6 @@ namespace ChatApp.Client.ChatHub
 
         public Task SendMessageToUser(User sender, IReadOnlyList<User> receivers, Message message) => _hubConnection.InvokeAsync(nameof(IServerChatHub.SendMessageToUser), sender, receivers, message);
 
-        #endregion
+        #endregion IServerChatHub
     }
 }

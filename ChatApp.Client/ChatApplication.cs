@@ -1,8 +1,6 @@
 ﻿using ChatApp.Client.ChatHub;
 using ChatApp.Shared.Entities;
 using Microsoft.AspNetCore.SignalR.Client;
-using System;
-using System.Threading.Tasks;
 
 namespace ChatApp.Client
 {
@@ -11,9 +9,10 @@ namespace ChatApp.Client
         private IChatHubConnection _client;
         private User _user;
         private bool _menuSelected;
+
         public async Task StartClientAsync()
         {
-            string name;
+            string? name;
             do
             {
                 Console.Write("Name: ");
@@ -43,7 +42,7 @@ namespace ChatApp.Client
         private async Task ShowMenu()
         {
             _menuSelected = false;
-            Console.WriteLine(@"Menu: 
+            Console.WriteLine(@"Menu:
 1) Send Message to All Users
 2) Send Message to a user
 3) Exit");
@@ -63,7 +62,7 @@ namespace ChatApp.Client
         {
             _menuSelected = true;
             Console.Write("Your Message: ");
-            string message;
+            string? message;
             while (_client.State == HubConnectionState.Connected && !string.IsNullOrEmpty(message = ReadLineOrEsc()))
             {
                 await _client.SendMessageToAll(_user, new Message(message));
@@ -84,22 +83,21 @@ namespace ChatApp.Client
             _menuSelected = true;
 
             Console.Write("Your Message to {0}: ", selected.Name);
-            string message;
+            string? message;
             while (_client.State == HubConnectionState.Connected && !string.IsNullOrEmpty(message = ReadLineOrEsc()))
             {
                 await _client.SendMessageToUser(_user, new User[] { selected }, new Message(message));
             }
         }
 
+        private void Client_UserJoinedHandler(object? sender, User e) => WriteLine(ConsoleColor.Green, $"{e.Name} is Online");
 
-        private void Client_UserJoinedHandler(object sender, User e) => WriteLine(ConsoleColor.Green, $"{e.Name} is Online");
+        private void Client_UserLeftHandler(object? sender, User e) => WriteLine(ConsoleColor.Red, $"{e.Name} is Offline");
 
-        private void Client_UserLeftHandler(object sender, User e) => WriteLine(ConsoleColor.Red, $"{e.Name} is Offline");
+        private void Client_MessageHandler(object? sender, MessageHandlerResult e) => WriteLine(ConsoleColor.Magenta, "{0}: {1}", e.Sender.Name, e.Message.Content);
 
-        private void Client_MessageHandler(object sender, MessageHandlerResult e) => WriteLine(ConsoleColor.Magenta, "{0}: {1}", e.Sender.Name, e.Message.Content);
+        private static readonly object _writeLineLock = new();
 
-
-        private static readonly object _writeLineLock = new object();
         private void WriteLine(ConsoleColor color, string format, params object[] args)
         {
             lock (_writeLineLock)
@@ -127,7 +125,7 @@ namespace ChatApp.Client
         }
 
         // returns null if user pressed Escape, or the contents of the line if they pressed Enter.
-        private static string ReadLineOrEsc()
+        private static string? ReadLineOrEsc()
         {
             string retString = "";
             int curIndex = 0;

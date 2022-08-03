@@ -1,6 +1,4 @@
-﻿using System.Threading.Tasks;
-
-namespace ChatApp.Client
+﻿namespace ChatApp.Client
 {
     internal class Program
     {

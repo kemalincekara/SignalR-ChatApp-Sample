@@ -1,5 +1,4 @@
 ﻿using ChatApp.Shared.Entities;
-using System.Threading.Tasks;
 
 namespace ChatApp.Shared.Abstract
 {
